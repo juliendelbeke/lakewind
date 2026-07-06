@@ -1,0 +1,67 @@
+stations:
+
+  mythenquai_zurich:
+    provider: Tecson
+    station_name: "Mythenquai"
+    location:
+      lake: "Lake Zurich"
+      city: "Zurich"
+      elevation_m: 416
+      coordinates:
+        system: "UTM"
+        zone: "32T"
+        easting: 464985
+        northing: 5244991
+
+    source_variables:
+
+      WGmax:
+        original_name: "Windböen (max) 10 min."
+        unit: "m/s"
+        description: >
+          Maximum wind gust measured during the 10 minute interval.
+
+      WGavr:
+        original_name: "Windgeschw. Ø 10min."
+        unit: "m/s"
+        description: >
+          Mean wind speed averaged over a 10 minute interval.
+          Main wind speed variable used for forecasting.
+
+      Umr_Beaufort:
+        original_name: "Windstärke Ø 10 min."
+        unit: "bft"
+        description: >
+          Beaufort wind force calculated from the 10 minute average wind speed.
+          Not used as a model input because it is a derived categorical scale.
+
+      WRvek:
+        original_name: "Windrichtung"
+        unit: "degrees"
+        description: >
+          Meteorological wind direction in degrees.
+          Direction from which the wind originates.
+          0=N, 90=E, 180=S, 270=W.
+
+    normalized_variables:
+
+      wind_speed_ms:
+        source: "WGavr"
+        unit: "m/s"
+
+      gust_speed_ms:
+        source: "WGmax"
+        unit: "m/s"
+
+      wind_direction_deg:
+        source: "WRvek"
+        unit: "degrees"
+
+    sampling:
+      interval_minutes: 10
+      timezone: "Europe/Zurich"
+
+    notes:
+      - "Historical measurements from Tecson Mythenquai station."
+      - "Coordinates provided in UTM 32T."
+      - "Beaufort scale excluded from ML features because it is derived from wind speed."
