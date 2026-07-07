@@ -3,53 +3,54 @@ import pandas as pd
 import os
 
 
-LAT = 47.36
-LON = 8.54
+LAT = 47.3574
+LON = 8.5363
+
+START_DATE = "2023-07-06"
+END_DATE = "2026-07-06"
 
 MODEL = "icon_d2"
-
-START_DATE = "2026-06-06"
-END_DATE = "2026-07-06"
 
 OUTPUT = "data/raw/openmeteo_icon_d2_zurich.csv"
 
 
-URL = "https://historical-forecast-api.open-meteo.com/v1/forecast"
+def download():
 
-
-PARAMS = {
-    "latitude": LAT,
-    "longitude": LON,
-
-    "hourly": ",".join([
-        "wind_speed_10m",
-        "wind_direction_10m",
-        "wind_gusts_10m",
-        "temperature_2m",
-        "pressure_msl",
-        "cloud_cover",
-        "precipitation"
-    ]),
-
-    "models": MODEL,
-
-    "start_date": START_DATE,
-    "end_date": END_DATE,
-
-    "timezone": "Europe/Zurich"
-}
-
-
-def fetch():
-
-    print("Downloading Open-Meteo forecast...")
-
-    r = requests.get(
-        URL,
-        params=PARAMS
+    url = (
+        "https://historical-forecast-api.open-meteo.com/v1/forecast"
     )
 
-    print(r.url)
+    params = {
+        "latitude": LAT,
+        "longitude": LON,
+        "hourly": ",".join([
+            "wind_speed_10m",
+            "wind_direction_10m",
+            "wind_gusts_10m",
+            "temperature_2m",
+            "pressure_msl",
+            "cloud_cover",
+            "precipitation"
+        ]),
+        "models": MODEL,
+        "start_date": START_DATE,
+        "end_date": END_DATE,
+        "timezone": "Europe/Zurich"
+    }
+
+
+    print("Downloading Open-Meteo forecast...")
+    print(requests.Request(
+        "GET",
+        url,
+        params=params
+    ).prepare().url)
+
+
+    r = requests.get(
+        url,
+        params=params
+    )
 
     r.raise_for_status()
 
@@ -59,13 +60,17 @@ def fetch():
 
 def parse(data):
 
-    hourly = data["hourly"]
-
-    df = pd.DataFrame(hourly)
+    df = pd.DataFrame(
+        data["hourly"]
+    )
 
     df["time"] = pd.to_datetime(
         df["time"]
     )
+
+    # Open-Meteo does not expose the ICON cycle directly
+    # so store retrieval time for provenance
+
 
     return df
 
@@ -73,27 +78,23 @@ def parse(data):
 
 if __name__ == "__main__":
 
-    data = fetch()
+    data = download()
 
     df = parse(data)
 
-
     print(df.head())
     print()
-    print("rows:", len(df))
-
+    print(df.info())
 
     os.makedirs(
         "data/raw",
         exist_ok=True
     )
 
-
     df.to_csv(
         OUTPUT,
         index=False
     )
-
 
     print()
     print("saved:")

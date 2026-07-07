@@ -8,7 +8,7 @@ INDEX = BASE + "/zurich/mythenquai/index.php"
 URL = BASE + "/zurich/mythenquai/uebersicht/messwerte.php"
 
 payload = {
-    "messw_beg": "06.06.2026",
+    "messw_beg": "06.06.2023",
     "messw_end": "06.07.2026",
     "felder[]": ["WGmax", "WGavr", "WRvek"],
     "auswahl": "2",
