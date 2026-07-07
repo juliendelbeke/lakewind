@@ -274,3 +274,12 @@ if len(strong):
             3
         )
     )
+
+df["persistence_error"] = (
+    df["wind"] - df["wind_lag_1h"]
+)
+
+print(
+    "Persistence MAE:",
+    df.persistence_error.abs().mean()
+)

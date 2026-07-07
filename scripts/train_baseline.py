@@ -39,16 +39,46 @@ target = "wind_error"
 
 
 features = [
+
+    # CH1 forecast
+    "wind_speed_10m",
     "wind_gusts_10m",
-    "temperature_2m",
     "pressure_msl",
+    "temperature_2m",
     "cloud_cover",
     "precipitation",
-    "hour_sin",
-    "hour_cos",
-    "month",
+
+    # atmospheric physics
+    "relative_humidity_2m",
+    "dew_point_2m",
+    "radiation_total",
+    "temp_dew_spread",
+    "rain_3h",
+    "cape",
+
+    # wind vector
+    "u10",
+    "v10",
     "dir_sin",
     "dir_cos",
+
+    # time
+    "hour_sin",
+    "hour_cos",
+    "doy_sin",
+    "doy_cos",
+
+    # local memory
+    "wind_lag_1h",
+    "wind_lag_2h",
+    "wind_lag_3h",
+    "gust_lag_1h",
+    "direction_lag_1h",
+    "wind_change_1h",
+    "wind_change_3h",
+
+    # derived
+    "gust_difference",
 ]
 
 
@@ -68,11 +98,11 @@ df = df.dropna(
 # ----------------------------
 
 train = df[
-    df["time"] < "2026-01-01"
+    df["time"] < "2026-04-01"
 ]
 
 test = df[
-    df["time"] >= "2026-01-01"
+    df["time"] >= "2026-04-01"
 ]
 
 
